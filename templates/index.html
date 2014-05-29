@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block body %}
+  <div class="row">
+    <div class="col-md-6 col-md-push-6">
+      <h2>Post a message</h2>
+      <form action="{{ url_for('add_post') }}" method="POST">
+        <div class="form-group">
+          <label for="author">Author</label>
+          <input type="text" class="form-control" id="author" name="author" value="{{ author }}" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label for="body">Message</label>
+          <textarea class="form-control" rows="3" id="body" name="body" placeholder="Your message..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-default">POST!</button>
+      </form>
+    </div>
+
+    <div class="col-md-6 col-md-pull-6">
+      <h2>Latest posts</h2>
+      <div id="posts">
+        {% for post in posts | reverse %}
+          <div class="well">
+            <p>{{ post.body }}</p>
+            <p class="text-right">
+              <small>
+                At {{ post.date.strftime('%H:%M:%S') }} by
+                <a href="{{ url_for('show_author', author=post.author) }}">
+                  {{ post.author }}
+                </a>
+              </small>
+            </p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/hogan-2.0.0.min.js') }}"></script>
+  {% if show_author is defined %}<script>window.SHOW_AUTHOR = {{ show_author | tojson }};</script>{% endif %}
+  <script src="{{ url_for('static', filename='js/hipflask.js') }}"></script>
+{% endblock %}
